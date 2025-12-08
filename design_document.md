@@ -17,7 +17,6 @@ On the bottom is a section to take the bought item out.
 
 ### take out the item
 
-###
 
 
 
