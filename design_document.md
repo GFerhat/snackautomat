@@ -163,10 +163,9 @@ go through each COIN entry in the map of a copy of our current coin stash as lon
 no: continue checking map for next entry
 yes: check if COIN has amount > 0 
 no: continue checking map for next entry
-yes:  amountOfCoinNeeded = remainingExchangeMoney / COIN value
-get 
-Subtract the amount in the copied map of that Coin by amountNeeded
-remainingExchangeMoney = COIN Value * amountNeeded - remainingExchangeMoney
+yes:  amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
+Subtract the amount in the copied map of that Coin by amountOfCoinNeeded
+remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded 
 
 if remainingExchangeMoney=0 return true
 else return false.
