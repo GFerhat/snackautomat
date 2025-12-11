@@ -151,21 +151,20 @@ if the dispensing slot is empty then the user will be notified that the dispensi
  the value is returned into the users wallet
  
 #### bool calcExchangeMoney(COINSTACK, int product price)
-
-create a copy of current user coin stash (COINSTACK)
-expectedExhchangeMoney = get sum of copyCoinstack - product price
-if (expectedExchangeMoney == 0) return true
-if (expectedExchangeMoney > sum of coin stash) return false
-remainingExchangeMoney = expectedExhchangeMoney
-
-loop (as long as remainingExchangeMoney > 0)
-go through each COIN entry in the map of a copy of our current coin stash as long as COIN value <= remainingExchangeMoney
-no: continue checking map for next entry
-yes: check if COIN has amount > 0 
-no: continue checking map for next entry
-yes:  amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
-Subtract the amount in the copied map of that Coin by amountOfCoinNeeded
-remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded 
-
-if remainingExchangeMoney=0 return true
-else return false.
+    create a copy of current user coin stack (COINSTACK)
+    expectedExhchangeMoney = get sum of copyCoinstack - product price
+    if (expectedExchangeMoney == 0) return true
+    if (expectedExchangeMoney > sum of coin stack) return false
+    remainingExchangeMoney = expectedExhchangeMoney
+    
+    loop (as long as remainingExchangeMoney > 0)
+    go through each COIN entry in the map of a copy of our current coin stack as long as COIN value <= remainingExchangeMoney
+    no: continue checking map for next entry
+    yes: check if COIN has amount > 0 
+    no: continue checking map for next entry
+    yes:  amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
+    Subtract the amount in the copied map of that Coin by amountOfCoinNeeded
+    remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded 
+    
+    if remainingExchangeMoney=0 return true
+    else return false.
