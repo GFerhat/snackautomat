@@ -22,17 +22,13 @@ class Coin {
     Map<int, int> result,
     int remaining,
   ) {
-    int i = 0;
-    for (var entry in availableCoins.entries) {
-      if (i < startIndex) {
-        i++;
-        continue;
-      }
+    final availableCoinsList = availableCoins.entries.toList();
+    for (int index = startIndex; index < availableCoinsList.length; index++) {
+      final entry = availableCoinsList[index];
       int coinValue = entry.key;
       int coinAmount = entry.value;
 
       if (coinValue > remaining) {
-        i++;
         continue;
       }
       int maxPossible = remaining ~/ coinValue;
@@ -49,10 +45,7 @@ class Coin {
       if (remaining == 0) {
         return true;
       }
-      i++;
     }
     return false;
   }
 }
-
-
