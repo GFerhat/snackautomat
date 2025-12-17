@@ -23,14 +23,14 @@ ITEM {
 
     COINSTACK {
     MAP<COIN,int> {
-        COIN(1): 100,
-        COIN(2): 100,
-        COIN(5): 100,
-        COIN(10): 100,
-        COIN(20): 100,
-        COIN(50): 100,
-        COIN(100): 100,
         COIN(200): 100,
+        COIN(100): 100,
+        COIN(50): 100,
+        COIN(20): 100,
+        COIN(10): 100,
+        COIN(5): 100,
+        COIN(2): 100,
+        COIN(1): 100,
         }
 
         get sum of all coin
@@ -155,16 +155,25 @@ if the dispensing slot is empty then the user will be notified that the dispensi
     expectedExhchangeMoney = get sum of copyCoinstack - product price
     if (expectedExchangeMoney == 0) return true
     if (expectedExchangeMoney > sum of coin stack) return false
-    remainingExchangeMoney = expectedExhchangeMoney
+    remainingExchangeMoney = expectedExchangeMoney
     
-    loop (as long as remainingExchangeMoney > 0)
-    go through each COIN entry in the map of a copy of our current coin stack as long as COIN value <= remainingExchangeMoney
-    no: continue checking map for next entry
-    yes: check if COIN has amount > 0 
-    no: continue checking map for next entry
-    yes:  amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
+
+
+    amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
     Subtract the amount in the copied map of that Coin by amountOfCoinNeeded
-    remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded 
+    remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded
+
+
     
-    if remainingExchangeMoney=0 return true
-    else return false.
+    
+    
+    //Map coins <int, int> {
+    200: 50, 
+    100: 50, 
+    50: 50, 
+    20: 50, 
+    10: 50, 
+    5: 50, 
+    2: 50, 
+    1: 50,
+    }
