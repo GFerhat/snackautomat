@@ -1,7 +1,7 @@
-class Coin {
+class Coinstack {
   Map<int, int> coins;
 
-  Coin(this.coins);
+  Coinstack(this.coins);
 
   Map<int, int>? exchange(int amountInCent) {
     for (int startIndex = 0; startIndex < coins.length; startIndex++) {

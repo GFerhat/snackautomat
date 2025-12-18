@@ -40,10 +40,7 @@ ITEM {
         constuctor(required this.cent)
         int cent
     }
-
-```
-___
-
+____
 
 
 
@@ -177,3 +174,4 @@ if the dispensing slot is empty then the user will be notified that the dispensi
     2: 50, 
     1: 50,
     }
+    

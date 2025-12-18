@@ -6,15 +6,15 @@ import 'my_app.dart';
 
 void main() {
   // runApp(const MyApp());
-  final coinChanger = Coin({
-    200: 1,
-    100: 2,
-    50: 1,
-    20: 3,
-    10: 0,
-    5: 0,
-    2: 0,
-    1: 0,
+  final coinChanger = Coinstack({
+    200: 100,
+    100: 100,
+    50: 100,
+    20: 100,
+    10: 100,
+    5: 100,
+    2: 100,
+    1: 100,
   });
 
   log('60 Cent: ${coinChanger.exchange(60)}');
