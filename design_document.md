@@ -150,22 +150,78 @@ if the dispensing slot is empty then the user will be notified that the dispensi
  #### takeOutMoney(value)
  the value is returned into the users wallet
  
-#### bool calcExchangeMoney(COINSTACK, int product price)
+#### map<int, int> calcExchangeMoney(int centsToBeExchanged)
 
-create a copy of current user coin stash (COINSTACK)
-expectedExhchangeMoney = get sum of copyCoinstack - product price
-if (expectedExchangeMoney == 0) return true
-if (expectedExchangeMoney > sum of coin stash) return false
-remainingExchangeMoney = expectedExhchangeMoney
+    create empty map = map of coinstack to exchange the centsToBeExchanged (result).
+    create int variable = remaining coins to be exchanged (remaining)
+    copy current coin stash <map> = via copy with method (availableCoins)
 
-loop (as long as remainingExchangeMoney > 0)
-go through each COIN entry in the map of a copy of our current coin stash as long as COIN value <= remainingExchangeMoney
-no: continue checking map for next entry
-yes: check if COIN has amount > 0 
-no: continue checking map for next entry
-yes:  amountOfCoinNeeded = min(remainingExchangeMoney / COIN value, amount of COIN)
-Subtract the amount in the copied map of that Coin by amountOfCoinNeeded
-remainingExchangeMoney = remainingExchangeMoney - COIN Value * amountOfCoinNeeded 
+    try the first possible variant and if fails, then it will try to exchange with a next possible variant.
+    i.e if can't exchange 60ct with <= coin 50ct and other smaller coins then it will reset everything and start with the next coin which is < 50ct (20ct) and so on...
+    for (int startIndex = 0; startIndex < coins.length; startIndex++) {
+        result = {};
+        remaining = centsToBeExchanged;
+        availableCoins = Map.from(coins);
+        }
+    check wether the helper function "_tryExchangeFrom()" returned true or false.
+    if true then we return the result and if false we return null.
 
-if remainingExchangeMoney=0 return true
-else return false.
+#### _tryExchangeFrom(startIndex, availableCoins, result, remaining)
+
+
+
+class Coinstack {
+  Map<int, int> coins;
+
+  Coinstack(this.coins);
+
+  Map<int, int>? exchange(int amountInCent) {
+    int remaining = 0;
+    Map<int, int> availableCoins = Map.from(coins);
+    Map<int, int> result = {};
+    for (int startIndex = 0; startIndex < coins.length; startIndex++) {
+        result = {};
+        remaining = amountInCent;
+        availableCoins = Map.from(coins);
+
+      if (_tryExchangeFrom(startIndex, availableCoins, result, remaining)) {
+        return result;
+      }
+    }
+    return null;
+  }
+
+  bool _tryExchangeFrom(
+    int startIndex,
+    Map<int, int> availableCoins,
+    Map<int, int> result,
+    int remaining,
+  ) {
+    final availableCoinsList = availableCoins.entries.toList();
+    
+    for (int index = startIndex; index < availableCoinsList.length; index++) {
+      final entry = availableCoinsList[index];
+      int coinValue = entry.key;
+      int coinAmount = entry.value;
+
+      if (coinValue > remaining) {
+        continue;
+      }
+      int maxPossible = remaining ~/ coinValue;
+      int amountOfCoinNeeded = maxPossible < coinAmount
+          ? maxPossible
+          : coinAmount;
+
+      if (amountOfCoinNeeded > 0) {
+        result[coinValue] = (result[coinValue] ?? 0) + amountOfCoinNeeded;
+        availableCoins[coinValue] = coinAmount - amountOfCoinNeeded;
+        remaining -= coinValue * amountOfCoinNeeded;
+      }
+
+      if (remaining == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
