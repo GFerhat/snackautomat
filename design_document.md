@@ -9,7 +9,11 @@ This is a Dart-based project that uses Flutter as the framework. The goal is to 
 When first opening the app the user sees a vending machine with all its available products in a grid format. The machine has a sidebar which has an "insert money" and "return money" button. The sidebar has also a coin & bill-slit, input field and a coin tray. On the bottom is a section to take the bought item out.
 
 ---
+### Process
+Customer wants to buy something -> He clicks on a product from the product card. The products details are shown and he can cancel and go back or press buy. On buy it will check wether a transaction is possible. First his inserted money will be checked which is empty. He is told to first insert money. He is returned back and should now click on the money slits on the sidebar. This opens a Window where he can insert coins varying from 2€ down to 0.01€ coins. If the customer is contend with his insertion he can press ok or cancel. Cancel results in returning the money back to the coin tray. If he presses ok then the money is ready for transaction. customer can now again try to buy something. If he has enough money then the machine will check wether it can give back change money or not. If yes then the transaction will be fulfilled by giving out the selected item and giving out the change. If the machine can not exchange the money, then the transaction is canceled his money is returned to the coin tray and the customer is told to insert the right amount for the product he wants to buy because the machine cant give change back. 
+The user can enter the admin mode by clicking the admin mode button. He will be asked to enter a password. After successfully entering the admin mode he can restock/remove snacks and either refill or empty the coin stack. He can leave admin mode any time.
 
+---
 # Models
 
 <span id=coinstack></id>
@@ -25,23 +29,11 @@ ITEM {
 }
 
 COINSTACK {
-    MAP<COIN,int> {
-        COIN(1): 100,
-        COIN(2): 100,
-        COIN(5): 100,
-        COIN(10): 100,
-        COIN(20): 100,
-        COIN(50): 100,
-        COIN(100): 100,
-        COIN(200): 100,
-    }
+    MAP<int,int> {
+}
     get sum of all coin
 }
 
-COIN {
-    constructor(required this.cent)
-    int cent
-}
 ```
 
 ---
@@ -146,7 +138,8 @@ All the money which is left in the machine’s user account is returned into the
 
 If there is no money or not enough money then nothing happens, and the user is notified and told to insert money. If there is an item in the <a href=#dispensing_slot>dispensing slot</a>, the user is notified that he should empty it.  
 Else, the item amount is checked:  
-If amount > 0 → the item amount is reduced by 1 and the user’s inserted money will be subtracted by the cost amount. Then the remaining money will be collectable by the user from the <a href=#coin_tray>coin tray</a>.  
+If amount > 0 → calcExchangeMoney() if a map with null as key is returned then notify customer that we can not exchange his money and ask him if hed like to proceed and buy anyways.
+the item amount is reduced by 1 and the user’s inserted money will be subtracted by the cost amount. Then the remaining money will be collectable by the user from the <a href=#coin_tray>coin tray</a>.  
 If amount ≤ 0 → the user will be notified that there is no item to buy.
 
 <span id=takeOutItem></id>
