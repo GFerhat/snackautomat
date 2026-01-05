@@ -138,7 +138,7 @@ All the money which is left in the machine’s user account is returned into the
 
 If there is no money or not enough money then nothing happens, and the user is notified and told to insert money. If there is an item in the <a href=#dispensing_slot>dispensing slot</a>, the user is notified that he should empty it.  
 Else, the item amount is checked:  
-If amount > 0 → calcExchangeMoney() if a map with null as key is returned then notify customer that we can not exchange his money and ask him if hed like to proceed and buy anyways.
+If amount > 0 → calcExchangeMoney() if a map with null as key is returned then notify customer that we can not exchange his money and ask to insert the right amount of money.
 the item amount is reduced by 1 and the user’s inserted money will be subtracted by the cost amount. Then the remaining money will be collectable by the user from the <a href=#coin_tray>coin tray</a>.  
 If amount ≤ 0 → the user will be notified that there is no item to buy.
 
@@ -152,55 +152,16 @@ The dispensing slot is emptied. A check icon will pop up for better feedback. If
 
 The value is returned into the user’s wallet.
 
-### map<int, int> calcExchangeMoney(int centsToBeExchanged)
+calcExchangeMoney(int centsToBeExchanged)
+This function attempts to calculate how a given amount of change (in cents) can be composed using the currently available coins in the vending machine.
+It returns a map where each key represents a coin value and each value represents how many coins of that type should be used to make up the required amount.
 
-Create empty map = map of coinstack to exchange the centsToBeExchanged (result).  
-Create int variable = remaining coins to be exchanged (remaining).  
-Copy current coin stash <map> = via copy with method (availableCoins).
+If an exact exchange is possible using the available coin denominations and quantities, the function returns the corresponding map of coins.
+If an exact exchange cannot be achieved with the available coins, the function returns null.
 
-Try the first possible variant and if fails, then it will try to exchange with a next possible variant.  
-i.e. if can't exchange 60ct with <= coin 50ct and other smaller coins then it will reset everything and start with the next coin which is < 50ct (20ct) and so on...
+Internally, the function tries different combinations of coin denominations to find a valid exchange starting from the largest available coin and moving to smaller ones. It ensures that the available coin quantities are respected.
 
-```
-for (int startIndex = 0; startIndex < coins.length; startIndex++) {
-    result = {};
-    remaining = centsToBeExchanged;
-    availableCoins = Map.from(coins);
-}
-```
-
-Check whether the helper function "\_tryExchangeFrom()" returned true or false.  
-If true then we return the result and if false we return null because we can not exchange the exchange money.
-
-### bool \_tryExchangeFrom(startIndex, availableCoins, result, remaining)
-
-With the following function we ensure that we start with a Coin which is <= remaining exchange.  
-And if the try fails completely we go back to the loop from the function calcExchangeMoney:
-
-```
-Create a list from the map availableCoins with a simple .toList() so we can go through each coin index with a loop. (availableCoinsList).
-loop (int index = startIndex; index < availableCoinsList.length; index++){
-    by overriding the index with our start index we ensure that we start calculating not on the first pos of the map rather we start at the wanted coin.
-    save the current entry of availableCoinsList at the current index so we can jump from one coin to the next smallest coin.
-    save and override integer coinValue and coinAmount for each iteration at the current index.
-
-    check whether coinValue is bigger than remaining exchange
-    yes: continue;
-    no: keep going in current iteration.
-
-    to know how many coins should be subtracted from available coin map and how many to add to result map.
-    a max possible coin. If the max possible coin amount is bigger than our current coin amount then we will subtract all current available amount of our coin.
-    save the amount needed in a variable (amountOfCoinNeeded)
-    get the max possible coin by dividing <int> remaining exchange with our <int> coinValue.
-    if our amountOfCoinsNeeded is 0 then we skip the calc and start another iteration with the next smaller coin.
-    if not then we add to our result map the amountOfCoinsNeeded to the specific value. i.e. we calc with 50ct coin then we add that to the map and give it amountOfCoinsNeeded as amount.
-    subtract from our availableCoins Map the amount of that coin.
-    as last calc step: remaining -= coinValue * amountOfCoinNeeded;
-
-    if remaining == 0
-    yes: return true
-    no: continue iterating
-
-    return false after all iterations.
-}
-```
+_tryExchangeFrom(startIndex, availableCoins, result, remaining)
+This helper function tries to create an exact exchange starting from a specific coin denomination (determined by startIndex).
+It recursively or iteratively tests combinations of coins to see if the target amount can be achieved without exceeding the available coin stock.
+It returns true if an exact exchange is found and updates the result map; otherwise, it returns false, signaling that the next possible variant should be tried.
