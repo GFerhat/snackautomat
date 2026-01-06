@@ -106,11 +106,20 @@ An AlertDialog and a number field appear where the user sees all available € c
 ---
 
 ## Database
+The whole data is stored in Supabase. The will be 2 separate storages. One is the vending machine itself, the other is are depot somewhere else. Both look the same, having snacks and coin stack. 
+
+### Vending Machine DB
+The vending machine has a limited storage. Each Slot can hold a total amount of 20 snacks. Since the Machine has 9 Slots the can be 180 snacks stored in the vending machine. So the table should have 9 rows. Each row having a slot id as Primary Key. Product id is the Foreign Key and then the amount of each snack (capped at 20). It also has a Coin Stack with all € coins which is the Primary Key and also the amount of each Coin. Coins are capped 2€ at 500 1€, 0.50€ at 1000 0.20€ 0.10€ 0.05€ at 1200 and 0.02€ 0.01€ at 1500.
+
+### Storage DB
+The storage is very similar except that it has a table with the Snack ID as Primary Key and an amount. The amount of Rows is based on the amount of different Snacks available. The Coin Stack is the same as vending machine except that it has no limit to the amount. The numbers can not exceed a number which is < 0.
 
 ## Admin
 
 The admin mode is accessed by long pressing the admin button, which opens a number field expecting a correct password. The user will enter admin mode after inserting the correct password and confirming.  
 **Password:** "0000"
+
+The admin mode appears like the normal customer mode. A label appears on the machine saying "ADMIN". Here you can click on any product in the card which instead of opening the buy window, opens a management window, in which you can change the snack with another or increase or decrease the stock. If you set the amount to 0 then the card will just display an empty slot. The changes are made and synchronized with the database when the button confirm is being pressed. Upon clicking on the money slits you can add or take coins out of the coin stack. Same confirming process like the snacks. To leave the admin mode hold the "button customer" mode.
 
 ---
 
