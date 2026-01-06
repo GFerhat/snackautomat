@@ -16,8 +16,6 @@ The user can enter the admin mode by clicking the admin mode button. He will be 
 ---
 # Models
 
-<span id=coinstack></id>
-
 ```
 ITEM SLOT {SLOT ID, ITEM}
 
@@ -38,41 +36,25 @@ COINSTACK {
 
 ---
 
-<span id=insert_money_window></id>
 
 # GUI
 
 ## Sidebar
 
-#### Coin slot
+### Coin slot
+
+A clickable widget.
+
+### Bill slit
+
+A clickable Widget.
+
+### Input field
 
 A visual widget with no function.
 
-#### Bill slit
-
-A visual widget with no function.
-
-#### Input field
-
-A visual widget with no function.
-
-#### Insert money button
-
-Is a button above the return money button. On tap: <a href=#open_insert_money_window> openInsertMoneyWindow()</a>.
-
-<span id=return_money_button></id>
-
-#### Return money button
-
-Is placed on the <a href = #sidebar>sidebar</a> above <a href=#input_field>input field</a><br> On tap: <a href=#return_money>return money()</a>. If money is returned into the <a href = #coin_tray>coin tray</a> it becomes clickable.
-
-<span id=coin_tray></id>
-
-#### Coin tray
-
-The coin tray is a container widget which, when the user has returned his money or bought an item and there is exchange money left, becomes clickable. On tap: <a href=#return_money> return money() </a>. If the user does not take out the money from the coin tray and gets more money exchanged (after another transaction), then the new exchange money is added onto the old exchange money.
-
-<span id=item_slot></id>
+### Coin tray
+The coin tray is a container widget which, when the user has returned his money or bought an item and there is exchange money left, becomes clickable. If the user does not take out the money from the coin tray and gets more money exchanged (after another transaction), then the new exchange money is added onto the old exchange money.
 
 ## Product Area
 
@@ -82,28 +64,14 @@ Is a clickable Container widget. Has a column child with:
 
 1. its product number
 2. product picture (2D icon)
-3. product price  
-   On tap: <a href=#buyItem> buyItem()</a>.
+3. product price
+   On tap: buy window opens
 
 ## Dispensing Area
 
-<span id=dispensing_slot></id>
-
 #### Dispensing slot
 
-Is below the sidebar and the product area, which becomes clickable after a product has been bought. On tap: <a href=#takeOutItem> takeOutItem() </a>.
-
-### Conditional
-
-#### Admin password window
-
-An AlertDialog and a number field appear which ask the user to input a password. The user can close the window (which resets the input field) or confirm. If the password is correct the user will enter admin mode. If it is wrong, he will be notified "wrong password".
-
-#### Insert money window
-
-An AlertDialog and a number field appear where the user sees all available € coins. On tapping any coin, it will save the coin in a temp account. The user has the option to close the window (which resets the textfield) or press the confirm button, which then returns the amount of each coin and adds them to the purchase total and resets the textfield.
-
----
+Is below the sidebar and the product area, which becomes clickable after a product has been bought. On tap: the item is taken out.
 
 ## Database
 The whole data is stored in Supabase. The will be 2 separate storages. One is the vending machine itself, the other is are depot somewhere else. Both look the same, having snacks and coin stack. 
@@ -123,43 +91,7 @@ The admin mode appears like the normal customer mode. A label appears on the mac
 
 ---
 
-## Functionalities
-
-### insertCoin(COIN)
-
-The value of the coin is matched with the coin in the map <a href=#coinstack>COINSTACK</a> and increases the int value by one for each matching coin.
-
-<span id=open_insert_money_window></id>
-
-### openInsertMoneyWindow()
-
-On tap: <a href=#insert_money_window>insert money window</a> opens.
-
-<span id=return_money></id>
-
-### returnMoney()
-
-All the money which is left in the machine’s user account is returned into the coin tray.
-
-<span id=buyItem></id>
-
-### buyItem(item)
-
-If there is no money or not enough money then nothing happens, and the user is notified and told to insert money. If there is an item in the <a href=#dispensing_slot>dispensing slot</a>, the user is notified that he should empty it.  
-Else, the item amount is checked:  
-If amount > 0 → calcExchangeMoney() if a map with null as key is returned then notify customer that we can not exchange his money and ask to insert the right amount of money.
-the item amount is reduced by 1 and the user’s inserted money will be subtracted by the cost amount. Then the remaining money will be collectable by the user from the <a href=#coin_tray>coin tray</a>.  
-If amount ≤ 0 → the user will be notified that there is no item to buy.
-
-<span id=takeOutItem></id>
-
-### takeOutItem()
-
-The dispensing slot is emptied. A check icon will pop up for better feedback. If the dispensing slot is empty then the user will be notified that the dispensing slot is empty.
-
-### takeOutMoney(value)
-
-The value is returned into the user’s wallet.
+### money exchange algorithm
 
 calcExchangeMoney(int centsToBeExchanged)
 This function attempts to calculate how a given amount of change (in cents) can be composed using the currently available coins in the vending machine.
