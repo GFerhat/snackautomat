@@ -8,12 +8,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
+        width: double.maxFinite,
+        height: double.maxFinite,
         color: Colors.white,
         child: Column(
           children: [
-            Machine(),
+            Expanded(child: Machine()),
             //Admin button
           ],
         ),

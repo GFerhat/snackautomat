@@ -8,6 +8,7 @@ class ProductArea extends StatelessWidget {
     return Expanded(
       child: GridView.count(
         crossAxisCount: 3,
+        shrinkWrap: true,
         children: List.generate(
           9,
           (index) => Container(
