@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_snackautomat/widgets/input_field/inputfield.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -8,11 +7,30 @@ class Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(), //münz
-        Container(), //schein
-        Container(), //card (erstmal nur admin)
-        Inputfield(),
-        Container(), //geldAusgabeFach
+        Container(
+          width: 200,
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(color: Colors.green),
+          child: Text("placeholder for coinslit"),
+        ), //coinslit
+        Container(
+          width: 200,
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(color: Colors.yellow),
+          child: Text("placeholder for billslit"),
+        ), //billslit
+        Container(
+          width: 200,
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(color: Colors.red),
+          child: Text("placeholder for cardslit"),
+        ), //card (erstmal nur visual)
+        Container(
+          width: 200,
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(color: Colors.blue),
+          child: Text("placeholder for cointray"),
+        ), //coin tray
       ],
     );
   }

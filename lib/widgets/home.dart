@@ -12,8 +12,16 @@ class HomePage extends StatelessWidget {
         height: double.maxFinite,
         color: Colors.white,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: Machine()),
+            SizedBox(height: 50),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: 90),
+                child: Machine(),
+              ),
+            ),
             //Admin button
           ],
         ),
