@@ -13,7 +13,7 @@ class ProductArea extends StatelessWidget {
         (index) => Container(
           margin: EdgeInsets.all(4),
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-          child: Center(child: Text('${index + 1}')),
+          child: Column(children: [Text('${index + 1}'), Text('Snack'),Text('Price')]),
         ),
       ),
     );
