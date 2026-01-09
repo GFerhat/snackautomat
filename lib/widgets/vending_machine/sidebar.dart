@@ -11,25 +11,35 @@ class Sidebar extends StatelessWidget {
           width: 200,
           padding: EdgeInsets.all(3),
           decoration: BoxDecoration(color: Colors.green),
-          child: Text("placeholder for coinslit"),
-        ), //coinslit
+          child: InkWell(
+            onTap: () {
+              print("Coin inserted");
+            },
+            child: Text("Coinslot (clickable)"),
+          ),
+        ),
         Container(
           width: 200,
           padding: EdgeInsets.all(3),
           decoration: BoxDecoration(color: Colors.yellow),
-          child: Text("placeholder for billslit"),
-        ), //billslit
+          child: InkWell(
+            onTap: () {
+              print("Bill inserted");
+            },
+            child: Text("Billslot (clickable)"),
+          ),
+        ),
         Container(
           width: 200,
           padding: EdgeInsets.all(3),
           decoration: BoxDecoration(color: Colors.red),
-          child: Text("placeholder for cardslit"),
+          child: Text("Cardslot"),
         ), //card (erstmal nur visual)
         Container(
           width: 200,
           padding: EdgeInsets.all(3),
           decoration: BoxDecoration(color: Colors.blue),
-          child: Text("placeholder for cointray"),
+          child: Text("CoinTray"),
         ), //coin tray
       ],
     );
