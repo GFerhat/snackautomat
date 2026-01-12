@@ -14,17 +14,22 @@ class CoinTray extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: Center(child: Text(label)),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 200,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0E0E0E),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
