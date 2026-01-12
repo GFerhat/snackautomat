@@ -3,14 +3,26 @@ class Coinstack {
 
   Coinstack({required this.coins});
 
-  Map<int, int>? exchange(int amountInCent) {
+  /// Attempts to exchange amountInCent and applies the exchange to
+  /// this Coinstack when successful.
+  ///
+  /// Returns a List with two maps [remainingCoins, usedCoins] if the
+  /// exchange succeeds, otherwise returns null.
+  List<Map<int, int>>? exchange(int amountInCent) {
     for (int startIndex = 0; startIndex < coins.length; startIndex++) {
       Map<int, int> result = {};
       int remaining = amountInCent;
       Map<int, int> availableCoins = Map.from(coins);
 
       if (_tryExchangeFrom(startIndex, availableCoins, result, remaining)) {
-        return result;
+        result.forEach((coinValue, usedCount) {
+          final current = coins[coinValue] ?? 0;
+          coins[coinValue] = current - usedCount;
+        });
+
+        final remainingCoins = Map<int, int>.from(coins);
+        final usedCoins = Map<int, int>.from(result);
+        return [remainingCoins, usedCoins];
       }
     }
     return null;
