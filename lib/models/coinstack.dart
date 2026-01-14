@@ -9,13 +9,11 @@ class Coinstack {
   /// Returns a List with two maps [remainingCoins, usedCoins] if the
   /// exchange succeeds, otherwise returns null.
   List<Map<int, int>>? exchange(int amountInCent) {
-    for (int startIndex = 0; startIndex < coins.length; startIndex++) {
-      int remaining = amountInCent;
-      Map<int, int> availableCoins = Map.from(coins);
+    final avialableCoinsList = coins.entries.toList();
+    for (int startIndex = 0; startIndex < avialableCoinsList.length; startIndex++) {
       Map<int, int>? result = _tryExchangeFrom(
         startIndex,
-        availableCoins,
-        remaining,
+        amountInCent,
       );
 
       if (result != null) {
@@ -32,64 +30,49 @@ class Coinstack {
     return null;
   }
 
-  Map<int, int>? _tryExchange(
-    // int startIndex,
-    Map<int, int> availableCoins,
-    int remaining,
-  ) {
-    availableCoins = {2: 1, 1: 1};
-    remaining = 1;
+  
+    Map<int, int>? _tryExchangeFrom(
+      int startIndex,
+      int amountInCent,
+    ) {
+      final availableCoinsList = coins.entries.toList();
+      if (startIndex < availableCoinsList.length) {
+        final entry = availableCoinsList[startIndex];
+        int coinValue = entry.key;
+        int coinAmount = entry.value;
 
-    final currentCoin = 2;
-    final coinAmount = availableCoins.remove(currentCoin);
-    final Map<int, int> result = {};
+        if (coinValue <= amountInCent && coinAmount > 0) {
+          int maxPossible = amountInCent ~/ coinValue;
+          int maxToTry = maxPossible < coinAmount ? maxPossible : coinAmount;
+      
+          for (int tryAmount = maxToTry; tryAmount >= 0; tryAmount--) {
+            Map<int, int> availableCoins = Map.from(coins);
+            Map<int,int> result = {};
+            int remaining = amountInCent;
 
-    {
-      //
-      // wir berechnen wieviele wir von was rausnehmen können und wie hoch der remaining danach noch ist;
-      //
-      if (remaining == 0) {
-        return result;
-      }
+            if (tryAmount > 0) {
+              result[coinValue] = tryAmount;
+              availableCoins[coinValue] = coinAmount - tryAmount;
+              remaining -= coinValue * tryAmount;
+            }
+            for (int index = startIndex + 1; index < availableCoinsList.length; index++) {
+            final nextEntry = availableCoinsList[index];
+            int nextCoinValue = nextEntry.key;
+            int nextCoinAmount = availableCoins[nextCoinValue] ?? 0;
 
-      final subResult = _tryExchange(availableCoins, remaining);
-      if (subResult == null) {
-        return null;
-      }
-    return result + subResult;
-    }
+            if (nextCoinValue > remaining || nextCoinAmount == 0) continue;
+            int maxPossibleNext = remaining ~/ nextCoinValue;
+            int amountOfCoinNeeded = maxPossibleNext < nextCoinAmount ? maxPossibleNext:nextCoinAmount;
 
-  }
-  //   Map<int, int>? _tryExchangeFrom(
-  //     int startIndex,
-  //     Map<int, int> availableCoins,
-  //     int remaining,
-  //   ) {
-  //     final Map<int, int> result = {};
-  //     final availableCoinsList = availableCoins.entries.toList();
-  //     for (int index = startIndex; index < availableCoinsList.length; index++) {
-  //       final entry = availableCoinsList[index];
-  //       int coinValue = entry.key;
-  //       int coinAmount = entry.value;
-
-  //       if (coinValue > remaining) {
-  //         continue;
-  //       }
-  //       int maxPossible = remaining ~/ coinValue;
-  //       int amountOfCoinNeeded = maxPossible < coinAmount
-  //           ? maxPossible
-  //           : coinAmount;
-
-  //       if (amountOfCoinNeeded > 0) {
-  //         result[coinValue] = (result[coinValue] ?? 0) + amountOfCoinNeeded;
-  //         availableCoins[coinValue] = coinAmount - amountOfCoinNeeded;
-  //         remaining -= coinValue * amountOfCoinNeeded;
-  //       }
-
-  //       if (remaining == 0) {
-  //         return result;
-  //       }
-  //     }
-  //     return null;
-  //   }
-}
+            if (amountOfCoinNeeded > 0) {
+              result[nextCoinValue] = (result[nextCoinValue] ?? 0) + amountOfCoinNeeded;
+              availableCoins[nextCoinValue] = nextCoinAmount - amountOfCoinNeeded;
+              remaining -= nextCoinValue * amountOfCoinNeeded;
+            }
+            if (remaining == 0) return result;
+            
+          }
+          if (remaining == 0) return result;
+          }}}
+          return null;
+}}
