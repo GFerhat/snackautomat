@@ -15,7 +15,7 @@ class Coinstack {
       startIndex < avialableCoinsList.length;
       startIndex++
     ) {
-      Map<int, int>? result = _tryExchangeFrom(startIndex, amountInCent);
+      Map<int, int>? result = _tryExchangeFrom(startIndex, amountInCent, avialableCoinsList);
 
       if (result != null) {
         result.forEach((coinValue, usedCount) {
@@ -31,8 +31,7 @@ class Coinstack {
     return null;
   }
 
-  Map<int, int>? _tryExchangeFrom(int startIndex, int amountInCent) {
-    final availableCoinsList = coins.entries.toList();
+  Map<int, int>? _tryExchangeFrom(int startIndex, int amountInCent, List<MapEntry<int, int>> availableCoinsList,) {
     if (startIndex < availableCoinsList.length) {
       final entry = availableCoinsList[startIndex];
       int coinValue = entry.key;
