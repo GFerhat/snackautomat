@@ -12,8 +12,26 @@ class ProductArea extends StatelessWidget {
         9,
         (index) => Container(
           margin: EdgeInsets.all(4),
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-          child: Column(children: [Text('${index + 1}'), Text('Snack'),Text('Price')]),
+          child: Material(
+            child: InkWell(
+              onTap: () {
+                print("you tapped on snackslot #${index + 1}");
+              },
+              borderRadius: BorderRadius.zero,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Column(
+                  children: [
+                    Text('${index + 1}'),
+                    Text('Snack'),
+                    Text('Price'),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
