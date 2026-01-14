@@ -10,11 +10,15 @@ class Coinstack {
   /// exchange succeeds, otherwise returns null.
   List<Map<int, int>>? exchange(int amountInCent) {
     for (int startIndex = 0; startIndex < coins.length; startIndex++) {
-      Map<int, int> result = {};
       int remaining = amountInCent;
       Map<int, int> availableCoins = Map.from(coins);
+      Map<int, int>? result = _tryExchangeFrom(
+        startIndex,
+        availableCoins,
+        remaining,
+      );
 
-      if (_tryExchangeFrom(startIndex, availableCoins, result, remaining)) {
+      if (result != null) {
         result.forEach((coinValue, usedCount) {
           final current = coins[coinValue] ?? 0;
           coins[coinValue] = current - usedCount;
@@ -28,36 +32,64 @@ class Coinstack {
     return null;
   }
 
-  bool _tryExchangeFrom(
-    int startIndex,
+  Map<int, int>? _tryExchange(
+    // int startIndex,
     Map<int, int> availableCoins,
-    Map<int, int> result,
     int remaining,
   ) {
-    final availableCoinsList = availableCoins.entries.toList();
-    for (int index = startIndex; index < availableCoinsList.length; index++) {
-      final entry = availableCoinsList[index];
-      int coinValue = entry.key;
-      int coinAmount = entry.value;
+    availableCoins = {2: 1, 1: 1};
+    remaining = 1;
 
-      if (coinValue > remaining) {
-        continue;
-      }
-      int maxPossible = remaining ~/ coinValue;
-      int amountOfCoinNeeded = maxPossible < coinAmount
-          ? maxPossible
-          : coinAmount;
+    final currentCoin = 2;
+    final coinAmount = availableCoins.remove(currentCoin);
+    final Map<int, int> result = {};
 
-      if (amountOfCoinNeeded > 0) {
-        result[coinValue] = (result[coinValue] ?? 0) + amountOfCoinNeeded;
-        availableCoins[coinValue] = coinAmount - amountOfCoinNeeded;
-        remaining -= coinValue * amountOfCoinNeeded;
-      }
-
+    {
+      //
+      // wir berechnen wieviele wir von was rausnehmen können und wie hoch der remaining danach noch ist;
+      //
       if (remaining == 0) {
-        return true;
+        return result;
       }
+
+      final subResult = _tryExchange(availableCoins, remaining);
+      if (subResult == null) {
+        return null;
+      }
+    return result + subResult;
     }
-    return false;
+
   }
+  //   Map<int, int>? _tryExchangeFrom(
+  //     int startIndex,
+  //     Map<int, int> availableCoins,
+  //     int remaining,
+  //   ) {
+  //     final Map<int, int> result = {};
+  //     final availableCoinsList = availableCoins.entries.toList();
+  //     for (int index = startIndex; index < availableCoinsList.length; index++) {
+  //       final entry = availableCoinsList[index];
+  //       int coinValue = entry.key;
+  //       int coinAmount = entry.value;
+
+  //       if (coinValue > remaining) {
+  //         continue;
+  //       }
+  //       int maxPossible = remaining ~/ coinValue;
+  //       int amountOfCoinNeeded = maxPossible < coinAmount
+  //           ? maxPossible
+  //           : coinAmount;
+
+  //       if (amountOfCoinNeeded > 0) {
+  //         result[coinValue] = (result[coinValue] ?? 0) + amountOfCoinNeeded;
+  //         availableCoins[coinValue] = coinAmount - amountOfCoinNeeded;
+  //         remaining -= coinValue * amountOfCoinNeeded;
+  //       }
+
+  //       if (remaining == 0) {
+  //         return result;
+  //       }
+  //     }
+  //     return null;
+  //   }
 }
