@@ -10,11 +10,12 @@ class Coinstack {
   /// exchange succeeds, otherwise returns null.
   List<Map<int, int>>? exchange(int amountInCent) {
     final avialableCoinsList = coins.entries.toList();
-    for (int startIndex = 0; startIndex < avialableCoinsList.length; startIndex++) {
-      Map<int, int>? result = _tryExchangeFrom(
-        startIndex,
-        amountInCent,
-      );
+    for (
+      int startIndex = 0;
+      startIndex < avialableCoinsList.length;
+      startIndex++
+    ) {
+      Map<int, int>? result = _tryExchangeFrom(startIndex, amountInCent);
 
       if (result != null) {
         result.forEach((coinValue, usedCount) {
@@ -30,49 +31,55 @@ class Coinstack {
     return null;
   }
 
-  
-    Map<int, int>? _tryExchangeFrom(
-      int startIndex,
-      int amountInCent,
-    ) {
-      final availableCoinsList = coins.entries.toList();
-      if (startIndex < availableCoinsList.length) {
-        final entry = availableCoinsList[startIndex];
-        int coinValue = entry.key;
-        int coinAmount = entry.value;
+  Map<int, int>? _tryExchangeFrom(int startIndex, int amountInCent) {
+    final availableCoinsList = coins.entries.toList();
+    if (startIndex < availableCoinsList.length) {
+      final entry = availableCoinsList[startIndex];
+      int coinValue = entry.key;
+      int coinAmount = entry.value;
 
-        if (coinValue <= amountInCent && coinAmount > 0) {
-          int maxPossible = amountInCent ~/ coinValue;
-          int maxToTry = maxPossible < coinAmount ? maxPossible : coinAmount;
-      
-          for (int tryAmount = maxToTry; tryAmount >= 0; tryAmount--) {
-            Map<int, int> availableCoins = Map.from(coins);
-            Map<int,int> result = {};
-            int remaining = amountInCent;
+      if (coinValue <= amountInCent && coinAmount > 0) {
+        int maxPossible = amountInCent ~/ coinValue;
+        int maxToTry = maxPossible < coinAmount ? maxPossible : coinAmount;
 
-            if (tryAmount > 0) {
-              result[coinValue] = tryAmount;
-              availableCoins[coinValue] = coinAmount - tryAmount;
-              remaining -= coinValue * tryAmount;
-            }
-            for (int index = startIndex + 1; index < availableCoinsList.length; index++) {
+        for (int tryAmount = maxToTry; tryAmount >= 0; tryAmount--) {
+          Map<int, int> availableCoins = Map.from(coins);
+          Map<int, int> result = {};
+          int remaining = amountInCent;
+
+          if (tryAmount > 0) {
+            result[coinValue] = tryAmount;
+            availableCoins[coinValue] = coinAmount - tryAmount;
+            remaining -= coinValue * tryAmount;
+          }
+          for (
+            int index = startIndex + 1;
+            index < availableCoinsList.length;
+            index++
+          ) {
             final nextEntry = availableCoinsList[index];
             int nextCoinValue = nextEntry.key;
             int nextCoinAmount = availableCoins[nextCoinValue] ?? 0;
 
             if (nextCoinValue > remaining || nextCoinAmount == 0) continue;
             int maxPossibleNext = remaining ~/ nextCoinValue;
-            int amountOfCoinNeeded = maxPossibleNext < nextCoinAmount ? maxPossibleNext:nextCoinAmount;
+            int amountOfCoinNeeded = maxPossibleNext < nextCoinAmount
+                ? maxPossibleNext
+                : nextCoinAmount;
 
             if (amountOfCoinNeeded > 0) {
-              result[nextCoinValue] = (result[nextCoinValue] ?? 0) + amountOfCoinNeeded;
-              availableCoins[nextCoinValue] = nextCoinAmount - amountOfCoinNeeded;
+              result[nextCoinValue] =
+                  (result[nextCoinValue] ?? 0) + amountOfCoinNeeded;
+              availableCoins[nextCoinValue] =
+                  nextCoinAmount - amountOfCoinNeeded;
               remaining -= nextCoinValue * amountOfCoinNeeded;
             }
             if (remaining == 0) return result;
-            
           }
           if (remaining == 0) return result;
-          }}}
-          return null;
-}}
+        }
+      }
+    }
+    return null;
+  }
+}
