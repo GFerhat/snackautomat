@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_snackautomat/widgets/vending_machine/suspension_slot.dart';
 import 'package:flutter_snackautomat/widgets/vending_machine/product_area/product_area.dart';
-import 'package:flutter_snackautomat/widgets/vending_machine/sidebar.dart';
+import 'package:flutter_snackautomat/widgets/vending_machine/sidebar/sidebar.dart';
 
 class Machine extends StatelessWidget {
   const Machine({super.key});
