@@ -19,6 +19,7 @@ class Coinstack {
         startIndex,
         amountInCent,
         availableCoinsList,
+        availableCoins
       );
 
       if (result == null) continue;
@@ -38,9 +39,11 @@ class Coinstack {
     int startIndex,
     int amountInCent,
     List<MapEntry<int, int>> availableCoinsList,
+    Map<int,int> availableCoins,
   ) {
     //Termination:
-    if (startIndex < availableCoinsList.length) return null;
+    if (amountInCent==0) return {};
+    if (startIndex >= availableCoinsList.length) return null;
 
     final entry = availableCoinsList[startIndex];
     int coinValue = entry.key;
