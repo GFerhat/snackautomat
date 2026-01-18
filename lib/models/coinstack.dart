@@ -15,11 +15,12 @@ class Coinstack {
       startIndex < availableCoinsList.length;
       startIndex++
     ) {
+      Map<int, int> availableCoins = Map.from(coins);
       Map<int, int>? result = _tryExchangeFrom(
         startIndex,
         amountInCent,
         availableCoinsList,
-        availableCoins
+        availableCoins,
       );
 
       if (result == null) continue;
@@ -39,56 +40,45 @@ class Coinstack {
     int startIndex,
     int amountInCent,
     List<MapEntry<int, int>> availableCoinsList,
-    Map<int,int> availableCoins,
+    Map<int, int> availableCoins,
   ) {
     //Termination:
-    if (amountInCent==0) return {};
+    if (amountInCent == 0) return {};
     if (startIndex >= availableCoinsList.length) return null;
 
     final entry = availableCoinsList[startIndex];
     int coinValue = entry.key;
     int coinAmount = entry.value;
 
-    //Termination:
-    if (coinValue > amountInCent || coinAmount <= 0) return null;
+    if (coinValue > amountInCent || coinAmount <= 0) {
+      return _tryExchangeFrom(
+        startIndex+1,
+        amountInCent,
+        availableCoinsList,
+        availableCoins,
+      );
+    }
 
     int maxPossible = amountInCent ~/ coinValue;
     int maxToTry = maxPossible < coinAmount ? maxPossible : coinAmount;
 
     for (int tryAmount = maxToTry; tryAmount >= 0; tryAmount--) {
-      Map<int, int> availableCoins = Map.from(coins);
-      Map<int, int> result = {};
-      int remaining = amountInCent;
+      int remaining = amountInCent - (coinValue * tryAmount);
+      Map<int, int> newAvailableCoins = Map.from(availableCoins);
+      newAvailableCoins[coinValue] = coinAmount - tryAmount;
 
-      if (tryAmount > 0) {
-        result[coinValue] = tryAmount;
-        availableCoins[coinValue] = coinAmount - tryAmount;
-        remaining -= coinValue * tryAmount;
-      }
-      for (
-        int index = startIndex + 1;
-        index < availableCoinsList.length;
-        index++
-      ) {
-        final nextEntry = availableCoinsList[index];
-        int nextCoinValue = nextEntry.key;
-        int nextCoinAmount = availableCoins[nextCoinValue] ?? 0;
-
-        if (nextCoinValue > remaining || nextCoinAmount == 0) continue;
-        int maxPossibleNext = remaining ~/ nextCoinValue;
-        int amountOfCoinNeeded = maxPossibleNext < nextCoinAmount
-            ? maxPossibleNext
-            : nextCoinAmount;
-
-        if (amountOfCoinNeeded > 0) {
-          result[nextCoinValue] =
-              (result[nextCoinValue] ?? 0) + amountOfCoinNeeded;
-          availableCoins[nextCoinValue] = nextCoinAmount - amountOfCoinNeeded;
-          remaining -= nextCoinValue * amountOfCoinNeeded;
+      Map<int, int>? result = _tryExchangeFrom(
+        startIndex+1,
+        remaining,
+        availableCoinsList,
+        availableCoins,
+      );
+      if (result != null) {
+        if (tryAmount > 0) {
+          result[coinValue] = tryAmount;
         }
-        if (remaining == 0) return result;
+        return result;
       }
-      if (remaining == 0) return result;
     }
 
     return null;

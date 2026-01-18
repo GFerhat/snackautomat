@@ -55,4 +55,15 @@ void main() {
 
     expect(coinstack.coins, remaining);
   });
+test('test coinstack must fail', () {
+  Coinstack coinstack = Coinstack(
+    coins: {200: 0, 100: 0, 50: 0, 20: 7, 10: 0, 5: 0, 2: 0, 1: 0},
+  );
+
+  final res = coinstack.exchange(160);
+
+  expect(res, isNull);
+});
 }
+
+
