@@ -1,21 +1,22 @@
 class Coinstack {
   Map<int, int> coins;
 
-  Coinstack({required this.coins});
+  Coinstack({this.coins = const {}});
 
   /// Attempts to exchange amountInCent and applies the exchange to
   /// this Coinstack when successful.
   ///
   /// Returns a List with two maps [remainingCoins, usedCoins] if the
   /// exchange succeeds, otherwise returns null.
-  List<Map<int, int>>? exchange(int amountInCent) {
-    final availableCoinsList = coins.entries.toList();
+  ExchangeResult? tryExchange(int amountInCent) {
+    final localCoins = {...coins};
+    final availableCoinsList = localCoins.entries.toList();
     for (
       int startIndex = 0;
       startIndex < availableCoinsList.length;
       startIndex++
     ) {
-      Map<int, int> availableCoins = Map.from(coins);
+      Map<int, int> availableCoins = Map.from(localCoins);
       Map<int, int>? result = _tryExchangeFrom(
         startIndex,
         amountInCent,
@@ -25,13 +26,16 @@ class Coinstack {
 
       if (result == null) continue;
       result.forEach((coinValue, usedCount) {
-        final current = coins[coinValue] ?? 0;
-        coins[coinValue] = current - usedCount;
+        final current = localCoins[coinValue] ?? 0;
+        localCoins[coinValue] = current - usedCount;
       });
 
-      final remainingCoins = Map<int, int>.from(coins);
+      final remainingCoins = Map<int, int>.from(localCoins);
       final usedCoins = Map<int, int>.from(result);
-      return [remainingCoins, usedCoins];
+      return ExchangeResult(
+        remainingCoins: remainingCoins,
+        usedCoins: usedCoins,
+      );
     }
     return null;
   }
@@ -52,7 +56,7 @@ class Coinstack {
 
     if (coinValue > amountInCent || coinAmount <= 0) {
       return _tryExchangeFrom(
-        startIndex+1,
+        startIndex + 1,
         amountInCent,
         availableCoinsList,
         availableCoins,
@@ -68,7 +72,7 @@ class Coinstack {
       newAvailableCoins[coinValue] = coinAmount - tryAmount;
 
       Map<int, int>? result = _tryExchangeFrom(
-        startIndex+1,
+        startIndex + 1,
         remaining,
         availableCoinsList,
         availableCoins,
@@ -83,4 +87,11 @@ class Coinstack {
 
     return null;
   }
+}
+
+class ExchangeResult {
+  Map<int, int> usedCoins;
+  Map<int, int> remainingCoins;
+
+  ExchangeResult({this.usedCoins = const {}, this.remainingCoins = const {}});
 }
