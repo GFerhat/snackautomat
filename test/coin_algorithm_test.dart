@@ -10,6 +10,7 @@ void main() {
       );
       final beforeCoins = {...coinstack.coins};
       final res = coinstack.tryExchange(160);
+      
       final afterCoins = {...coinstack.coins};
 
       expect(res, isNotNull);
