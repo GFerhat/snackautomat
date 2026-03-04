@@ -3,6 +3,7 @@ import 'coin_slot.dart';
 import 'bill_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
+import 'insert_money_window.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
@@ -20,56 +21,6 @@ class _SidebarState extends State<Sidebar> {
   String? lastCoinImage;
   String? lastBillImage;
 
-  void showCoinMenu() {
-    final List<int> coinValues = [1, 2, 5, 10, 20, 50, 100, 200];
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return ListView(
-          children: coinValues.map((value) {
-            return ListTile(
-              title: Text(value < 100 ? "$value ct" : "${value ~/ 100} €"),
-              onTap: () {
-                setState(() {
-                  totalCents += value;
-                  insertedCoinValues.add(value);
-                  lastCoinImage = "assets/images/coins/coin_$value.png";
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-
-  void showBillMenu() {
-    final List<int> billValues = [500, 1000, 2000, 5000];
-
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return ListView(
-          children: billValues.map((value) {
-            return ListTile(
-              title: Text("${value ~/ 100} €"),
-              onTap: () {
-                setState(() {
-                  totalCents += value;
-                  insertedBillValues.add(value);
-                  lastBillImage =
-                      "assets/images/bills/bill_${value ~/ 100}.png";
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final int insertedCoins = insertedCoinValues.length;
@@ -86,7 +37,28 @@ class _SidebarState extends State<Sidebar> {
             color: insertedCoins == 0
                 ? Colors.grey.shade800
                 : Colors.green.shade600,
-            onTap: showCoinMenu,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) => InsertMoneyWindow(
+                  coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
+                  billValues: [500, 1000, 2000, 5000],
+                  onInsert: (value) {
+                    setState(() {
+                      totalCents += value;
+                      if (value < 500) {
+                        insertedCoinValues.add(value);
+                        lastCoinImage = "assets/images/coins/coin_$value.png";
+                      } else {
+                        insertedBillValues.add(value);
+                        lastBillImage =
+                            "assets/images/bills/bill_${value ~/ 100}.png";
+                      }
+                    });
+                  },
+                ),
+              );
+            },
             imagePath: lastCoinImage,
           ),
 
@@ -97,7 +69,28 @@ class _SidebarState extends State<Sidebar> {
             color: insertedBills == 0
                 ? Colors.grey.shade800
                 : Colors.orange.shade600,
-            onTap: showBillMenu,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) => InsertMoneyWindow(
+                  coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
+                  billValues: [500, 1000, 2000, 5000],
+                  onInsert: (value) {
+                    setState(() {
+                      totalCents += value;
+                      if (value < 500) {
+                        insertedCoinValues.add(value);
+                        lastCoinImage = "assets/images/coins/coin_$value.png";
+                      } else {
+                        insertedBillValues.add(value);
+                        lastBillImage =
+                            "assets/images/bills/bill_${value ~/ 100}.png";
+                      }
+                    });
+                  },
+                ),
+              );
+            },
             imagePath: lastBillImage,
           ),
 
@@ -126,17 +119,6 @@ class _SidebarState extends State<Sidebar> {
 
           const SizedBox(height: 16),
 
-          // Text(
-          //   "Coins: ${insertedCoinValues.map((v) => v < 100 ? "$v ct" : "${v ~/ 100}€").join(", ")}",
-          //   style: const TextStyle(color: Colors.white70),
-          // ),
-          // Text(
-          //   "Bills: ${insertedBillValues.map((v) => "${v ~/ 100}€").join(", ")}",
-          //   style: const TextStyle(color: Colors.white70),
-          // ),
-
-          const SizedBox(height: 16),
-
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -150,7 +132,7 @@ class _SidebarState extends State<Sidebar> {
                 BoxShadow(
                   color: Colors.black26,
                   blurRadius: 4,
-                  offset: Offset(2, 2),
+                  offset: const Offset(2, 2),
                 ),
               ],
             ),
