@@ -32,7 +32,6 @@ class _SidebarState extends State<Sidebar> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // --- Coin Slot ---
           CoinSlot(
             label: insertedCoins == 0 ? "Coins" : "$insertedCoins coins",
             color: insertedCoins == 0
@@ -65,7 +64,6 @@ class _SidebarState extends State<Sidebar> {
 
           const SizedBox(height: 12),
 
-          // --- Bill Slot ---
           BillSlot(
             label: insertedBills == 0 ? "Bills" : "$insertedBills bills",
             color: insertedBills == 0
