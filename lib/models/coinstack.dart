@@ -95,3 +95,10 @@ class ExchangeResult {
 
   ExchangeResult({this.usedCoins = const {}, this.remainingCoins = const {}});
 }
+
+extension CoinstackX on Coinstack {
+  /// Calculates the total value of all coins in the stack in cents.
+  int get totalValue {
+    return coins.entries.fold(0, (sum, entry) => sum + (entry.key * entry.value));
+  }
+}
