@@ -4,6 +4,7 @@ class InsertMoneyWindow extends StatelessWidget {
   final Function(int) onInsert;
   final List<int> coinValues;
 
+
   const InsertMoneyWindow({
     super.key,
     required this.onInsert,
@@ -31,7 +32,6 @@ class InsertMoneyWindow extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Coins
           Wrap(
             spacing: 8,
             runSpacing: 8,

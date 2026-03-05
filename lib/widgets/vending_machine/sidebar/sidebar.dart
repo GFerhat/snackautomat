@@ -16,7 +16,6 @@ class Sidebar extends ConsumerWidget {
     final notifier = ref.read(appStateProvider.notifier);
 
   List<int> insertedCoinValues = [];
-
   String? lastCoinImage;
 
   @override
