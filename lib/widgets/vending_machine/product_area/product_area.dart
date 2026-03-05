@@ -38,7 +38,7 @@ class ProductArea extends ConsumerWidget {
       child: InkWell(
         onTap: () {
           if (isAvailable) {
-            _showBuyDialog(context, ref, product!);
+            _showBuyDialog(context, ref, product);
             print("you tapped on snackslot #${index + 1} - ${product.name}");
           }
         },
@@ -53,7 +53,7 @@ class ProductArea extends ConsumerWidget {
               Text('${index + 1}'),
               if (isAvailable)
                 Text(
-                  product!.name,
+                  product.name,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               else

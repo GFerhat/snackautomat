@@ -111,6 +111,9 @@ class AppStateNotifier extends Notifier<AppState> {
           return p.id == product.id ? p.copyWith(count: p.count - 1) : p;
         }).toList(),
 
+        // Add purchased item to the suspension slot
+        purchasedItems: () => [...state.purchasedItems, product],
+
         // Remove change from machine stash
         coinsInMachine: () => Coinstack(coins: result.remainingCoins),
 
@@ -127,6 +130,13 @@ class AppStateNotifier extends Notifier<AppState> {
     } else {
       print("Machine cannot provide exact change!");
     }
+  }
+
+  /// Clears all purchased items from the suspension slot.
+  void clearPurchasedItems() {
+    state = state.copyWith(
+      purchasedItems: () => [],
+    );
   }
 
   /// Converts a price in cents to a formatted euro string.

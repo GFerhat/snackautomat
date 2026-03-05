@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_snackautomat/models/coinstack.dart';
 import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 
 class SuspensionSlot extends ConsumerWidget {
@@ -8,30 +7,84 @@ class SuspensionSlot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appState = ref.watch(appStateProvider);
-    final returnedCoinsTotal = appState.coinsInReturn.totalValue;
-    final returnedCoinsCount = appState.coinsInReturn.coins.values.fold(
-      0,
-      (sum, count) => sum + count,
-    );
+    final purchasedItems = ref.watch(appStateProvider).purchasedItems;
 
-    return Container(
-      padding: EdgeInsets.all(3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            returnedCoinsTotal == 0
-                ? "Coin Tray - Empty"
-                : "Coin Tray - ${(returnedCoinsTotal / 100).toStringAsFixed(2)} € ($returnedCoinsCount coins)",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: returnedCoinsTotal == 0 ? Colors.grey : Colors.white,
+    final hasItems = purchasedItems.isNotEmpty;
+
+    return InkWell(
+      onTap: hasItems ? () => _showPurchasedItemsDialog(context, ref) : null,
+      child: Container(
+        child: Padding(
+          padding: EdgeInsets.all(3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                hasItems
+                    ? "Product Dispensing Area - ${purchasedItems.length} item${purchasedItems.length > 1 ? 's' : ''} ready"
+                    : "Product Dispensing Area",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        decoration: BoxDecoration(
+          color: hasItems ? Colors.greenAccent : Colors.deepOrangeAccent,
+          boxShadow: hasItems
+              ? [
+                  BoxShadow(
+                    color: Colors.greenAccent.withValues(alpha: 0.5),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: Offset(0, 0),
+                  ),
+                ]
+              : null,
+        ),
+      ),
+    );
+  }
+
+  void _showPurchasedItemsDialog(BuildContext context, WidgetRef ref) {
+    final purchasedItems = ref.read(appStateProvider).purchasedItems;
+    final notifier = ref.read(appStateProvider.notifier);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Purchased Items'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: purchasedItems.length,
+              itemBuilder: (context, index) {
+                final item = purchasedItems[index];
+                return ListTile(
+                  title: Text(item.name),
+                  subtitle: Text(notifier.formatPriceToEuros(item.price)),
+                  leading: CircleAvatar(
+                    child: Text('${index + 1}'),
+                  ),
+                );
+              },
             ),
           ),
-        ],
-      ),
-      decoration: BoxDecoration(color: Colors.deepOrangeAccent),
+          actions: [
+            TextButton(
+              onPressed: () {
+                notifier.clearPurchasedItems();
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

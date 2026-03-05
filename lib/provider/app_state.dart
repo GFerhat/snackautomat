@@ -7,6 +7,7 @@ class AppState {
   final Coinstack coinsInInput;
   final Product? selectedProduct;
   final List<Product> products;
+  final List<Product> purchasedItems;
 
   const AppState({
     required this.coinsInMachine,
@@ -14,6 +15,7 @@ class AppState {
     required this.coinsInInput,
     this.selectedProduct,
     required this.products,
+    this.purchasedItems = const [],
   });
 
   AppState copyWith({
@@ -22,6 +24,7 @@ class AppState {
     Coinstack Function()? coinsInInput,
     Product? Function()? selectedProduct,
     List<Product> Function()? products,
+    List<Product> Function()? purchasedItems,
   }) => AppState(
     coinsInMachine: coinsInMachine == null
         ? this.coinsInMachine
@@ -32,5 +35,8 @@ class AppState {
         ? this.selectedProduct
         : selectedProduct(),
     products: products == null ? this.products : products(),
+    purchasedItems: purchasedItems == null
+        ? this.purchasedItems
+        : purchasedItems(),
   );
 }
