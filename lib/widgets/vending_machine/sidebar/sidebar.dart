@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_snackautomat/models/coinstack.dart';
 import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 import 'coin_slot.dart';
-import 'bill_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
 import 'money_slits_window.dart'; // jetzt für Issue 18
@@ -16,15 +15,13 @@ class Sidebar extends ConsumerWidget {
     final appState = ref.watch(appStateProvider);
     final notifier = ref.read(appStateProvider.notifier);
 
-    final int totalCents = appState.coinsInInput.totalValue;
-    final int insertedCoins = appState.coinsInInput.coins.values.fold(
-      0,
-      (sum, count) => sum + count,
-    );
+  List<int> insertedCoinValues = [];
 
-    final int insertedBills = appState.coinsInInput.coins.entries
-        .where((entry) => entry.key >= 500)
-        .fold(0, (sum, entry) => sum + entry.value);
+  String? lastCoinImage;
+
+  @override
+  Widget build(BuildContext context) {
+    final int insertedCoins = insertedCoinValues.length;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -42,9 +39,14 @@ class Sidebar extends ConsumerWidget {
                 context: context,
                 builder: (_) => MoneySlitsWindow(
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
-                  billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
-                    notifier.inputCoin(value);
+                    setState(() {
+                      totalCents += value;
+                      if (value < 500) {
+                        insertedCoinValues.add(value);
+                        lastCoinImage = "assets/images/coins/coin_$value.png";
+                      }
+                    });
                   },
                 ),
               );
@@ -53,26 +55,6 @@ class Sidebar extends ConsumerWidget {
           ),
 
           const SizedBox(height: 12),
-
-          BillSlot(
-            label: insertedBills == 0 ? "Bills" : "$insertedBills bills",
-            color: insertedBills == 0
-                ? Colors.grey.shade800
-                : Colors.orange.shade600,
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (_) => MoneySlitsWindow(
-                  coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
-                  billValues: [500, 1000, 2000, 5000],
-                  onInsert: (value) {
-                    notifier.inputCoin(value);
-                  },
-                ),
-              );
-            },
-            imagePath: null,
-          ),
 
           const SizedBox(height: 12),
 
@@ -90,7 +72,11 @@ class Sidebar extends ConsumerWidget {
             label: "Return",
             color: Colors.grey.shade700,
             onTap: () {
-              notifier.returnCoins();
+              setState(() {
+                returnedCents += totalCents;
+                totalCents = 0;
+                insertedCoinValues.clear();
+              });
             },
           ),
 
