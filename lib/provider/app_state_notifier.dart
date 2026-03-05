@@ -15,11 +15,13 @@ class AppStateNotifier extends Notifier<AppState> {
     products: [
       Product(id: '1', name: 'Cola', count: 5, price: 100),
       Product(id: '2', name: 'Fanta', count: 5, price: 100),
-      Product(id: '3', name: 'Sprite', count: 5, price: 100),
+      Product(id: '3', name: 'Sprite', count: 1, price: 100),
       Product(id: '4', name: 'Snickers', count: 5, price: 200),
       Product(id: '5', name: 'Mars', count: 5, price: 200),
       Product(id: '6', name: 'Twix', count: 5, price: 170),
-      Product(id: '7', name: 'Kinderriegel', count: 5, price: 90),
+      Product(id: '7', name: 'Kinderriegel', count: 1, price: 90),
+      Product(id: '8', name: 'Rittersport', count: 5, price: 190),
+      Product(id: '9', name: 'Rittersport', count: 5, price: 190),
     ],
   );
 
@@ -125,5 +127,11 @@ class AppStateNotifier extends Notifier<AppState> {
     } else {
       print("Machine cannot provide exact change!");
     }
+  }
+
+  /// Converts a price in cents to a formatted euro string.
+  /// Example: 200 cents -> "2.00 €"
+  String formatPriceToEuros(int priceInCents) {
+    return '${(priceInCents / 100).toStringAsFixed(2)} €';
   }
 }
