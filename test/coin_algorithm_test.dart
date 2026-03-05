@@ -10,12 +10,11 @@ void main() {
       );
       final beforeCoins = {...coinstack.coins};
       final res = coinstack.tryExchange(160);
-      
+
       final afterCoins = {...coinstack.coins};
 
       expect(res, isNotNull);
-      final remaining = res!.remainingCoins;
-      final used = res.usedCoins;
+      final used = res!.usedCoins;
 
       // Logical check: 160 should be 100 + 50 + 10
       expect(used, {100: 1, 50: 1, 10: 1});

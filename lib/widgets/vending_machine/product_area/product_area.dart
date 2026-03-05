@@ -1,49 +1,112 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_snackautomat/models/product.dart';
+import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 
-class ProductArea extends StatelessWidget {
+class ProductArea extends ConsumerWidget {
   const ProductArea({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appState = ref.watch(appStateProvider);
+    final products = appState.products;
+
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
       children: List.generate(
         9,
-        (index) => Container(
-          margin: EdgeInsets.all(4),
-          child: InkWell(
-            onTap: () {
-              print("you tapped on snackslot #${index + 1}");
-            },
-            borderRadius: BorderRadius.zero,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Column(
-                children: [
-                  Text('${index + 1}'),
-                  Text('Snack'),
-                  Text('Price'),
-                ],
-              ),
-            ),
+        (index) {
+          final hasProduct = index < products.length;
+          final product = hasProduct ? products[index] : null;
+          return _buildProductSlot(context, index, product, ref);
+        },
+      ),
+    );
+  }
+
+  Widget _buildProductSlot(
+    BuildContext context,
+    int index,
+    Product? product,
+    WidgetRef ref,
+  ) {
+    final isAvailable = product != null && product.count > 0;
+
+    return Container(
+      margin: EdgeInsets.all(4),
+      child: InkWell(
+        onTap: () {
+          if (isAvailable) {
+            _showBuyDialog(context, ref, product!);
+            print("you tapped on snackslot #${index + 1} - ${product.name}");
+          }
+        },
+        borderRadius: BorderRadius.zero,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('${index + 1}'),
+              if (isAvailable)
+                Text(
+                  product!.name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              else
+                Text(
+                  'Empty',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              if (isAvailable)
+                Text(
+                  ref
+                      .read(appStateProvider.notifier)
+                      .formatPriceToEuros(product.price),
+                  style: TextStyle(color: Colors.green),
+                )
+              else
+                Text(
+                  '- €',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              if (isAvailable)
+                Text('In stock: ${product.count}')
+              else
+                Text(
+                  'No item',
+                  style: TextStyle(color: Colors.grey),
+                ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _showBuyDialog(BuildContext context) {
+  void _showBuyDialog(BuildContext context, WidgetRef ref, Product product) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('SNACK'),
+          title: Text(product.name),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Price: ${ref.read(appStateProvider.notifier).formatPriceToEuros(product.price)}',
+              ),
+              Text('In stock: ${product.count}'),
+            ],
+          ),
           actions: [
             MaterialButton(
               onPressed: () {
+                // Attempt to purchase the product
+                ref.read(appStateProvider.notifier).purchaseProduct(product);
                 Navigator.pop(context);
               },
               child: Text('BUY'),

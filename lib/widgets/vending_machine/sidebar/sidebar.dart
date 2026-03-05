@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_snackautomat/models/coinstack.dart';
+import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 import 'coin_slot.dart';
 import 'bill_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
 import 'insert_money_window.dart';
 
-class Sidebar extends StatefulWidget {
+class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
 
   @override
-  State<Sidebar> createState() => _SidebarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appState = ref.watch(appStateProvider);
+    final notifier = ref.read(appStateProvider.notifier);
 
-class _SidebarState extends State<Sidebar> {
-  int totalCents = 0;
-  int returnedCents = 0;
+    final int totalCents = appState.coinsInInput.totalValue;
+    final int insertedCoins = appState.coinsInInput.coins.values.fold(
+      0,
+      (sum, count) => sum + count,
+    );
 
-  List<int> insertedCoinValues = [];
-  List<int> insertedBillValues = [];
-  String? lastCoinImage;
-  String? lastBillImage;
-
-  @override
-  Widget build(BuildContext context) {
-    final int insertedCoins = insertedCoinValues.length;
-    final int insertedBills = insertedBillValues.length;
+    final int insertedBills = appState.coinsInInput.coins.entries
+        .where((entry) => entry.key >= 500)
+        .fold(0, (sum, entry) => sum + entry.value);
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -44,22 +44,12 @@ class _SidebarState extends State<Sidebar> {
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
                   billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
-                    setState(() {
-                      totalCents += value;
-                      if (value < 500) {
-                        insertedCoinValues.add(value);
-                        lastCoinImage = "assets/images/coins/coin_$value.png";
-                      } else {
-                        insertedBillValues.add(value);
-                        lastBillImage =
-                            "assets/images/bills/bill_${value ~/ 100}.png";
-                      }
-                    });
+                    notifier.inputCoin(value);
                   },
                 ),
               );
             },
-            imagePath: lastCoinImage,
+            imagePath: null,
           ),
 
           const SizedBox(height: 12),
@@ -76,22 +66,12 @@ class _SidebarState extends State<Sidebar> {
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
                   billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
-                    setState(() {
-                      totalCents += value;
-                      if (value < 500) {
-                        insertedCoinValues.add(value);
-                        lastCoinImage = "assets/images/coins/coin_$value.png";
-                      } else {
-                        insertedBillValues.add(value);
-                        lastBillImage =
-                            "assets/images/bills/bill_${value ~/ 100}.png";
-                      }
-                    });
+                    notifier.inputCoin(value);
                   },
                 ),
               );
             },
-            imagePath: lastBillImage,
+            imagePath: null,
           ),
 
           const SizedBox(height: 12),
@@ -108,12 +88,7 @@ class _SidebarState extends State<Sidebar> {
             label: "Return",
             color: Colors.grey.shade700,
             onTap: () {
-              setState(() {
-                returnedCents += totalCents;
-                totalCents = 0;
-                insertedCoinValues.clear();
-                insertedBillValues.clear();
-              });
+              notifier.returnCoins();
             },
           ),
 
