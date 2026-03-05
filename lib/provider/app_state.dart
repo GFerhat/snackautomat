@@ -18,6 +18,10 @@ class AppState {
     this.purchasedItems = const [],
   });
 
+    // GETTER: User credit in cents
+
+    int get credit => coinsInInput.totalValue;
+
   AppState copyWith({
     Coinstack Function()? coinsInMachine,
     Coinstack Function()? coinsInReturn,

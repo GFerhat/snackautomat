@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class CoinSlot extends StatelessWidget {
   final String label;
   final Color color;

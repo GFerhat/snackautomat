@@ -6,6 +6,7 @@ import 'coin_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
 import 'insert_money_window.dart';
+import 'package:flutter_snackautomat/widgets/vending_machine/sidebar/coin_selection_sheet.dart';
 
 class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
@@ -35,12 +36,7 @@ class Sidebar extends ConsumerWidget {
             onTap: () {
               showModalBottomSheet(
                 context: context,
-                builder: (_) => InsertMoneyWindow(
-                  coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
-                  onInsert: (value) {
-                    notifier.inputCoin(value);
-                  },
-                ),
+                builder: (_) => const CoinSelectionSheet(),
               );
             },
             imagePath: null,

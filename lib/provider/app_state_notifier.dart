@@ -46,6 +46,7 @@ class AppStateNotifier extends Notifier<AppState> {
     state = state.copyWith(coinsInInput: () => Coinstack(coins: newMap));
   }
 
+
   /// Moves all coins from the input area into the machine's stash.
   void confirmInput() {
     final machineMap = Map<int, int>.from(state.coinsInMachine.coins);
