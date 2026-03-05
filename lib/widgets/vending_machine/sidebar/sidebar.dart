@@ -6,7 +6,7 @@ import 'coin_slot.dart';
 import 'bill_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
-import 'insert_money_window.dart';
+import 'money_slits_window.dart'; // jetzt für Issue 18
 
 class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
@@ -40,7 +40,7 @@ class Sidebar extends ConsumerWidget {
             onTap: () {
               showModalBottomSheet(
                 context: context,
-                builder: (_) => InsertMoneyWindow(
+                builder: (_) => MoneySlitsWindow(
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
                   billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
@@ -62,7 +62,7 @@ class Sidebar extends ConsumerWidget {
             onTap: () {
               showModalBottomSheet(
                 context: context,
-                builder: (_) => InsertMoneyWindow(
+                builder: (_) => MoneySlitsWindow(
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
                   billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
@@ -76,6 +76,7 @@ class Sidebar extends ConsumerWidget {
 
           const SizedBox(height: 12),
 
+          // --- Card Slot ---
           CardSlot(
             label: "Card Slot",
             color: Colors.grey.shade800,
@@ -84,6 +85,7 @@ class Sidebar extends ConsumerWidget {
 
           const SizedBox(height: 16),
 
+          // --- Coin Tray / Return ---
           CoinTray(
             label: "Return",
             color: Colors.grey.shade700,
@@ -94,6 +96,7 @@ class Sidebar extends ConsumerWidget {
 
           const SizedBox(height: 16),
 
+          // --- Total Anzeige ---
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
