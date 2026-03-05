@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 class InsertMoneyWindow extends StatelessWidget {
   final Function(int) onInsert;
   final List<int> coinValues;
-  final List<int> billValues;
+
 
   const InsertMoneyWindow({
     super.key,
     required this.onInsert,
     required this.coinValues,
-    required this.billValues,
   });
 
   @override

@@ -38,7 +38,6 @@ class _SidebarState extends State<Sidebar> {
                 context: context,
                 builder: (_) => InsertMoneyWindow(
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
-                  billValues: [500, 1000, 2000, 5000],
                   onInsert: (value) {
                     setState(() {
                       totalCents += value;
