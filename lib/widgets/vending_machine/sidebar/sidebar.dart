@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_snackautomat/models/coinstack.dart';
+import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 import 'coin_slot.dart';
 import 'card_slot.dart';
 import 'coin_tray.dart';
-import 'insert_money_window.dart';
+import 'money_slits_window.dart'; // jetzt für Issue 18
 
-class Sidebar extends StatefulWidget {
+class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
 
   @override
-  State<Sidebar> createState() => _SidebarState();
-}
-
-class _SidebarState extends State<Sidebar> {
-  int totalCents = 0;
-  int returnedCents = 0;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appState = ref.watch(appStateProvider);
+    final notifier = ref.read(appStateProvider.notifier);
 
   List<int> insertedCoinValues = [];
   String? lastCoinImage;
@@ -36,7 +36,7 @@ class _SidebarState extends State<Sidebar> {
             onTap: () {
               showModalBottomSheet(
                 context: context,
-                builder: (_) => InsertMoneyWindow(
+                builder: (_) => MoneySlitsWindow(
                   coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
                   onInsert: (value) {
                     setState(() {
@@ -50,13 +50,14 @@ class _SidebarState extends State<Sidebar> {
                 ),
               );
             },
-            imagePath: lastCoinImage,
+            imagePath: null,
           ),
 
           const SizedBox(height: 12),
 
           const SizedBox(height: 12),
 
+          // --- Card Slot ---
           CardSlot(
             label: "Card Slot",
             color: Colors.grey.shade800,
@@ -65,6 +66,7 @@ class _SidebarState extends State<Sidebar> {
 
           const SizedBox(height: 16),
 
+          // --- Coin Tray / Return ---
           CoinTray(
             label: "Return",
             color: Colors.grey.shade700,
@@ -79,6 +81,7 @@ class _SidebarState extends State<Sidebar> {
 
           const SizedBox(height: 16),
 
+          // --- Total Anzeige ---
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(

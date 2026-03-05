@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_snackautomat/widgets/vending_machine/suspension_slot.dart';
 import 'package:flutter_snackautomat/widgets/vending_machine/product_area/product_area.dart';
 import 'package:flutter_snackautomat/widgets/vending_machine/sidebar/sidebar.dart';
 
-class Machine extends StatelessWidget {
+class Machine extends ConsumerWidget {
   const Machine({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[200], // Light gray background
