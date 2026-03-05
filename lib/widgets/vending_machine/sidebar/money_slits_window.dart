@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class MoneySlitsWindow extends StatelessWidget {
   final List<int> coinValues;
-  final List<int> billValues;
   final void Function(int) onInsert;
 
   const MoneySlitsWindow({
     super.key,
     required this.coinValues,
-    required this.billValues,
     required this.onInsert,
   });
 
@@ -39,19 +37,6 @@ class MoneySlitsWindow extends StatelessWidget {
             }).toList(),
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: billValues.map((v) {
-              return ElevatedButton(
-                onPressed: () {
-                  onInsert(v);
-                  Navigator.pop(context);
-                },
-                child: Text("${v ~/ 100} €"),
-              );
-            }).toList(),
-          ),
         ],
       ),
     );
