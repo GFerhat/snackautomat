@@ -23,7 +23,7 @@ class CoinSlot extends StatelessWidget {
         width: 200,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: const Color(0xFF1B1B1B),
+          color: const Color(0xFF1B1B1B), 
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color, width: 2),
           boxShadow: [
@@ -38,10 +38,12 @@ class CoinSlot extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (imagePath != null)
-              Image.asset(imagePath!, height: 40, fit: BoxFit.contain),
-
+              Image.asset(
+                imagePath!,
+                height: 40,
+                fit: BoxFit.contain,
+              ),
             const SizedBox(height: 6),
-
             Text(
               label,
               textAlign: TextAlign.center,
