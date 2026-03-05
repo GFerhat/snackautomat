@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_snackautomat/models/coinstack.dart';
 import 'package:flutter_snackautomat/models/product.dart';
 import 'package:flutter_snackautomat/provider/app_state_provider.dart';
 
@@ -8,8 +9,8 @@ class ProductArea extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appState = ref.watch(appStateProvider);
-    final products = appState.products;
+    final appStateWatch = ref.watch(appStateProvider);
+    final products = appStateWatch.products;
 
     return GridView.count(
       crossAxisCount: 3,
@@ -32,6 +33,7 @@ class ProductArea extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final isAvailable = product != null && product.count > 0;
+    final notifier = ref.read(appStateProvider.notifier);
 
     return Container(
       margin: EdgeInsets.all(4),
@@ -63,9 +65,7 @@ class ProductArea extends ConsumerWidget {
                 ),
               if (isAvailable)
                 Text(
-                  ref
-                      .read(appStateProvider.notifier)
-                      .formatPriceToEuros(product.price),
+                  notifier.formatPriceToEuros(product.price),
                   style: TextStyle(color: Colors.green),
                 )
               else
@@ -88,6 +88,9 @@ class ProductArea extends ConsumerWidget {
   }
 
   void _showBuyDialog(BuildContext context, WidgetRef ref, Product product) {
+    final notifier = ref.read(appStateProvider.notifier);
+    final userCredit = ref.read(appStateProvider).coinsInInput.totalValue;
+
     showDialog(
       context: context,
       builder: (context) {
@@ -96,18 +99,42 @@ class ProductArea extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Price: ${ref.read(appStateProvider.notifier).formatPriceToEuros(product.price)}',
-              ),
+              Text('Price: ${notifier.formatPriceToEuros(product.price)}'),
               Text('In stock: ${product.count}'),
             ],
           ),
           actions: [
             MaterialButton(
               onPressed: () {
-                // Attempt to purchase the product
-                ref.read(appStateProvider.notifier).purchaseProduct(product);
-                Navigator.pop(context);
+                if (userCredit < product.price) {
+                  // show alert
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Please insert money'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'inserted: ${notifier.formatPriceToEuros(userCredit)}',
+                          ),
+                          Text(
+                            'product cost: ${notifier.formatPriceToEuros(product.price)}',
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  notifier.purchaseProduct(product);
+                  Navigator.pop(context);
+                }
               },
               child: Text('BUY'),
               textColor: Colors.green,
